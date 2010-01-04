@@ -13,7 +13,8 @@ module OAI
     include Enumerable
 
     def each
-      for record_element in xpath_all(@doc, './/ListRecords/record')
+      records = xpath_all(@doc, './/ListRecords/record')
+      for record_element in records 
         yield OAI::Record.new(record_element)
       end
     end

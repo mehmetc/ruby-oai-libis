@@ -8,6 +8,8 @@ module OAI
         return doc.find(path).to_a if doc.find(path)
       when 'rexml'
         return REXML::XPath.match(doc, path)
+      when 'nokogiri'
+	return doc.xpath(path).to_a if doc.xpath(path)
       end
       return []
     end
@@ -28,6 +30,8 @@ module OAI
         return el.content
       when 'rexml'
         return el.text 
+      when 'nokogiri'
+	return el.text
       end
       return nil
     end
@@ -50,7 +54,12 @@ module OAI
              return node.property(attr_name)
           end
         end	
+      when 'Nokogiri::XML::Node'
+	return node.get_attribute(attr_name)
+      when 'Nokogiri::XML::Element'
+	return node.get_attribute(attr_name)
       end
+
       return nil
     end
 
@@ -69,6 +78,14 @@ module OAI
         return 'rexml'
       when 'REXML::Document'
         return 'rexml'
+      when 'Nokogiri::XML::Node'
+	return 'nokogiri'
+      when 'Nokogiri::XML::NodeSet'
+	return 'nokogiri'
+      when 'Nokogiri::XML::Document'
+	return 'nokogiri'
+      when 'Nokogiri::XML::Element'
+	return 'nokogiri'
       end
     end
   end

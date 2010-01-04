@@ -91,6 +91,13 @@ module OAI
       when 'rexml'
         require 'rexml/document'
         require 'rexml/xpath'
+      when 'nokogiri'
+	begin
+	  require 'rubygems'
+	  require 'nokogiri'
+	rescue
+	  raise OAI::Exception.new("nokogiri not available")
+	end
       else
         raise OAI::Exception.new("unknown parser: #{@parser}")
       end
@@ -157,7 +164,7 @@ module OAI
       # fire off the request and return appropriate DOM object
       uri = build_uri(verb, opts)
       xml = strip_invalid_utf_8_chars(get(uri))
-      if @parser == 'libxml' 
+      if @parser == 'libxml' || @parser == 'nokogiri'
         # remove default namespace for oai-pmh since libxml
         # isn't able to use our xpaths to get at them 
         # if you know a way around thins please let me know
@@ -202,6 +209,12 @@ module OAI
         rescue REXML::ParseException => e
           raise OAI::Exception, 'response not well formed XML: '+e.message, caller
         end
+      when 'nokogiri'
+	begin
+	  parsed = Nokogiri::XML::Document.parse(xml)
+	rescue Nokogiri::XML::SyntaxError => e
+	  raise OAI::Exception,  'response not well formed XML: '+e.message, caller 
+	end
       end
     end
 
