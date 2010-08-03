@@ -14,9 +14,22 @@ module OAI
 
     def each
       records = xpath_all(@doc, './/ListRecords/record')
+      
       for record_element in records 
         yield OAI::Record.new(record_element)
       end
+    end
+    
+    def empty?
+      records = xpath_all(@doc, './/ListRecords/record')
+      
+      return records.size == 0
+    end
+    
+    def size
+      records = xpath_all(@doc, './/ListRecords/record')
+      
+      return records.size      
     end
   end
 end

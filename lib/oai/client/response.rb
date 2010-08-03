@@ -11,24 +11,24 @@ module OAI
       error = xpath_first(doc, './/error')
       return unless error
       case error.class.to_s
-        when 'REXML::Element'
-          message = error.text
+      when 'REXML::Element'
+        message = error.text
+        code = error.attributes['code']
+      when 'LibXML::XML::Node'
+        message = error.content
+        code = ""
+        if defined?(error.property) == nil
           code = error.attributes['code']
-        when 'LibXML::XML::Node'
-          message = error.content
-          code = ""
-          if defined?(error.property) == nil
-              code = error.attributes['code']
-           else
-	      begin
-	 	code = error["code"]
-	      rescue
-                code = error.property('code')
-	      end
-           end
-	when 'Nokogiri::XML::Element'
-	  message = error.text
-	  code = error.attribute('code')
+        else
+          begin
+            code = error["code"]
+          rescue
+            code = error.property('code')
+          end
+        end
+      when 'Nokogiri::XML::Element'
+        message = error.text
+        code = error.attribute('code')
       end
       raise OAI::Exception.new(message, code)
     end

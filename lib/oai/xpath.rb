@@ -9,7 +9,7 @@ module OAI
       when 'rexml'
         return REXML::XPath.match(doc, path)
       when 'nokogiri'
-	return doc.xpath(path).to_a if doc.xpath(path)
+        return doc.xpath(path).to_a if doc.xpath(path)
       end
       return []
     end
@@ -29,9 +29,9 @@ module OAI
       when 'libxml'
         return el.content
       when 'rexml'
-        return el.text 
+        return el.text
       when 'nokogiri'
-	return el.text
+        return el.text
       end
       return nil
     end
@@ -42,29 +42,29 @@ module OAI
       when 'REXML::Element'
         return node.attribute(attr_name)
       when 'LibXML::XML::Node'
-  	#There has been a method shift between 0.5 and 0.7
+        #There has been a method shift between 0.5 and 0.7
         if defined?(node.property) == nil
           return node.attributes[attr_name]
         else
-	  #node.property is being deprecated.  We'll eventually remove
-	  #this trap
-	  begin
-	    return node[attr_name]
+          #node.property is being deprecated.  We'll eventually remove
+          #this trap
+          begin
+            return node[attr_name]
           rescue
-             return node.property(attr_name)
+            return node.property(attr_name)
           end
-        end	
+        end
       when 'Nokogiri::XML::Node'
-	return node.get_attribute(attr_name)
+        return node.get_attribute(attr_name)
       when 'Nokogiri::XML::Element'
-	return node.get_attribute(attr_name)
+        return node.get_attribute(attr_name)
       end
 
       return nil
     end
 
-    private 
-   
+    private
+
     # figure out what sort of object we should do xpath on
     def parser_type(x)
       case x.class.to_s
@@ -73,19 +73,19 @@ module OAI
       when 'LibXML::XML::Node'
         return 'libxml'
       when 'LibXML::XML::Node::Set'
-	return 'libxml'
+        return 'libxml'
       when 'REXML::Element'
         return 'rexml'
       when 'REXML::Document'
         return 'rexml'
       when 'Nokogiri::XML::Node'
-	return 'nokogiri'
+        return 'nokogiri'
       when 'Nokogiri::XML::NodeSet'
-	return 'nokogiri'
+        return 'nokogiri'
       when 'Nokogiri::XML::Document'
-	return 'nokogiri'
+        return 'nokogiri'
       when 'Nokogiri::XML::Element'
-	return 'nokogiri'
+        return 'nokogiri'
       end
     end
   end
